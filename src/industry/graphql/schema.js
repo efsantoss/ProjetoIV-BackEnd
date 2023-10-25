@@ -4,9 +4,9 @@ const { gql } = require('apollo-server');
 
 const industryTypeDefs = gql`
   type Industry {
-    email: String
-    cnpj: String
-    phone: String
+    email: String!
+    cnpj: String!
+    phone: String!
   }
 
   input IndustryInput {
@@ -20,7 +20,7 @@ const industryTypeDefs = gql`
   }
   
   type Mutation {
-    saveIndustry(industry: IndustryInput!): Industry
+    createIndustry(industry: IndustryInput!): Industry
   }
 `;
 

@@ -17,13 +17,14 @@ const industryResolvers = {
       },
 
     Mutation: {
-      saveIndustry: async (_, { industry }) => {
+      createIndustry: async (_, { industry }) => {
         const industryData = new Industry(
           email = industry.email,
           cnpj = industry.cnpj,
           phone = industry.phone);
           
-        return IndustryRepository.saveIndustry(industryData) }
+        return IndustryRepository.createIndustry(industryData) 
+      }
     }
 
 };

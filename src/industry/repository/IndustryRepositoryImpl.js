@@ -1,23 +1,25 @@
-const {database, ref, set} = require('../../firebase/firebase');
+const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
+const industryErrorCodes = require('../domain/exception/IndustryErrorCodes')
 
 class IndustryRepositoryImpl {
 
-    static saveIndustry(industry) {
+    static createIndustry(industry) {
       if (industry.cnpj.length !== 14) {
-        throw new ApolloError("CNPJ must be 14 digits. " + industry.phone, 'INVALID_CNPJ_LENGTH');
+        throw new ApolloError(
+          "CNPJ must be 14 digits. " + industry.cnpj, industryErrorCodes.INVALID_CNPJ_LENGTH);
       }
   
       if (industry.phone.length !== 9) {
-        throw new ApolloError("Phone number must be 9 digits.", 'INVALID_PHONE_LENGTH');
+        throw new ApolloError("Phone number must be 9 digits. " + industry.phone, industryErrorCodes.INVALID_PHONE_LENGTH);
       }
   
       try {
-          set(ref(database, 'industries/' + industry.cnpj), {
-              email: industry.email,
-              cnpj: industry.cnpj,
-              phone: industry.phone
-            });
+        const firebase = new Firebase();
+
+        firebase.saveData(
+            'industries/' + industry.cnpj, industry
+          );
   
           return industry;
       } catch (error) {
