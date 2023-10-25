@@ -10,9 +10,9 @@ const industryTypeDefs = gql`
   }
 
   input IndustryInput {
-    email: String
-    cnpj: Int
-    phone: Int
+    email: String!
+    cnpj: Int!
+    phone: Int!
   }
 
   type Query {
@@ -20,7 +20,7 @@ const industryTypeDefs = gql`
   }
   
   type Mutation {
-    saveIndustry(industry: IndustryInput): Boolean
+    saveIndustry(industry: IndustryInput!): Industry
   }
 `;
 

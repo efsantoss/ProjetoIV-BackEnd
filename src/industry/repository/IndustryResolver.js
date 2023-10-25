@@ -1,7 +1,7 @@
 // funções relaciona a industria
 
-const db = require('../../firebase/firebase');
-const Industry = require('../model/Industry');
+const {database, ref, set} = require('../../firebase/firebase');
+const Industry = require('../model/Industry')
 
 const industryResolvers = {
     Query: {
@@ -16,29 +16,33 @@ const industryResolvers = {
         },
       },
 
-    Mutation: {
-        saveIndustry: async(_, { industry }) => {
-        { industry }
-        let {email, cnpj, phone } = industry;
+      Mutation: {
+        saveIndustry: async (_, { industry }) => {
+            const { email, cnpj, phone } = industry;
+            const newIndustry = new Industry(
+              email,
+              cnpj, 
+              phone
+            );
 
-        let newIndustry = new Industry(
-            email = email,
-            cnpj = cnpj,
-            phone = phone
-        );
+            try {
+                set(ref(database, 'industries/' + newIndustry.cnpj), {
+                    email: newIndustry.email,
+                    cnpj: newIndustry.cnpj,
+                    phone: newIndustry.phone
+                  });
 
-        const reference = db.ref('industries');
-        const newIndustryRef = reference.push()
-            
-        newIndustryRef.set(newIndustry, (error) => {
-            if (error) {
+                console.log('Data saved successfully');
+
+                return newIndustry;
+            } catch (error) {
+                console.error('Data could not be saved.', error);
+                
                 return error;
-            } else {
-                return true;
             }
-        });
         }
     }
+
 };
 
 module.exports = industryResolvers;
