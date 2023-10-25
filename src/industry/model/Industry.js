@@ -11,3 +11,5 @@ class Industry {
         this.phone = phone;
     }
 }
+
+module.exports = Industry;

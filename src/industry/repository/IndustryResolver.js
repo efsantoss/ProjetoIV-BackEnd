@@ -1,6 +1,7 @@
 // funções relaciona a industria
 
 const db = require('../../firebase/firebase');
+const Industry = require('../model/Industry');
 
 const industryResolvers = {
     Query: {
@@ -16,26 +17,26 @@ const industryResolvers = {
       },
 
     Mutation: {
-        saveIndustry: async(
-            _,
-            { email, cnpj, phone }
-        ) => {
-            const newIndustry = new Industry(
-                email = email,
-                cnpj = cnpj,
-                phone = phone
-            );
+        saveIndustry: async(_, { industry }) => {
+        { industry }
+        let {email, cnpj, phone } = industry;
 
-            const reference = db.ref('industries');
-            const newIndustryRef = reference.push()
+        let newIndustry = new Industry(
+            email = email,
+            cnpj = cnpj,
+            phone = phone
+        );
+
+        const reference = db.ref('industries');
+        const newIndustryRef = reference.push()
             
-            newIndustryRef.set(newIndustry, (error) => {
-                if (error) {
-                    return false;
-                } else {
-                    return true;
-                }
-            });
+        newIndustryRef.set(newIndustry, (error) => {
+            if (error) {
+                return error;
+            } else {
+                return true;
+            }
+        });
         }
     }
 };

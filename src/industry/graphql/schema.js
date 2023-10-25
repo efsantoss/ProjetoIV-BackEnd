@@ -9,12 +9,18 @@ const industryTypeDefs = gql`
     phone: Int
   }
 
+  input IndustryInput {
+    email: String
+    cnpj: Int
+    phone: Int
+  }
+
   type Query {
     getIndustry(id: ID!): Industry
   }
   
   type Mutation {
-    saveIndustry(email: String, cnpj: Int, phone: Int): Boolean
+    saveIndustry(industry: IndustryInput): Boolean
   }
 `;
 

@@ -12,7 +12,7 @@ const firebaseConfig = {
     appId: "1:1078857854189:web:b9a395b1b0d3f991b970e4"
   };
   
-admin.initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 const db = admin.database();
 
