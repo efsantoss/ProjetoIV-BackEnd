@@ -1,4 +1,5 @@
 // Configuração do Firebase
+//referencia eh o caminho q eu quero salvar
 
 const { initializeApp } = require("firebase/app");
 const { getDatabase, ref, set } = require("firebase/database");

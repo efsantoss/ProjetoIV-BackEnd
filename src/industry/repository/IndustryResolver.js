@@ -3,6 +3,8 @@
 const Industry = require('../model/Industry');
 const IndustryRepository = require('./IndustryRepositoryImpl')
 
+// resolvers definem a implementação das querys e mutation
+// resolver basicamente vai definir oque determinada query ou mutation vai fazer quando ser chamada no graphql
 const industryResolvers = {
   Query: {
     getIndustry: async (_, { id }) => {
@@ -16,8 +18,9 @@ const industryResolvers = {
     },
   },
 
+  // aki temos as implementações das mutations
   Mutation: {
-    createIndustry: async (_, industry) => {
+    createIndustry: async (_, {industry}) => {
       const industryData = new Industry(
         email = industry.email,
         cnpj = industry.cnpj,

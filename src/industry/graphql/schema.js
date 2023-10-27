@@ -1,5 +1,9 @@
 // Definindo o schema relacionado a industria
+// São coleções de objetos dentro de um determinado banco de dados, 
+// que organizam vários aspectos e são importantes para segmentação da segurança, 
+// facilitando a administração dos objetos e dos dados.
 
+//importando o graphql no apollo server
 const { gql } = require('apollo-server');
 
 const industryTypeDefs = gql`
@@ -25,5 +29,10 @@ const industryTypeDefs = gql`
     createUserWithEmailAndPassword(email: String!, password: String!): Boolean
   }
 `;
-
+// em mutation e query definimos a estrutura de uma função do graphql
+// toda fez que fomos criar um tipo de parâmetro(no caso o IndustryInput), que nao seja primario( id, boolean, int, string ), precisamos colocar como sufixo input,
+// precisamos escrever input NomeDoParametroInput{ valores }, caso um valor tiver !, ele eh obrigatoriamente NAO NULO
 module.exports = industryTypeDefs;
+
+// Query == Consulta ( sempre que fomos fazer uma consulta no bancod e dados usaremos o query)
+// Mutation == Mudança ( sempre que formos alterar ou salvar algo no banco de dados usaremos o mutation)
