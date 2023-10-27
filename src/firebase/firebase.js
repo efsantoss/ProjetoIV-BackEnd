@@ -2,6 +2,11 @@
 
 const { initializeApp } = require("firebase/app");
 const { getDatabase, ref, set } = require("firebase/database");
+const { 
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+  } = require('firebase/auth');
 
 class Firebase {
   constructor() {
@@ -18,12 +23,45 @@ class Firebase {
     this.app = initializeApp(this.firebaseConfig);
 
     this.database = getDatabase(this.app);
+
+    this.auth = getAuth();
   }
 
   saveData(reference, value) {
     const databaseRef = ref(this.database, reference);
     
     set(databaseRef, value);
+  }
+
+  
+  async signIn(email, password) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+
+      console.log(userCredential.user);
+        
+      if (userCredential.user) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(error) {
+      return error;
+    }
+  }
+
+  async createUser(email, password) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+        
+      if (userCredential.user) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(error) {
+      return error;
+    }
   }
 
 }

@@ -1,10 +1,12 @@
+// Realização das funções no banco de dados
+
 const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
 const industryErrorCodes = require('../domain/exception/IndustryErrorCodes')
 
 class IndustryRepositoryImpl {
-
-    static createIndustry(industry) {
+  
+  static createIndustry(industry) {
       if (industry.cnpj.length !== 14) {
         throw new ApolloError(
           "CNPJ must be 14 digits. " + industry.cnpj, industryErrorCodes.INVALID_CNPJ_LENGTH);

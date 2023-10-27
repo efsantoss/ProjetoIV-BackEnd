@@ -21,6 +21,8 @@ const industryTypeDefs = gql`
   
   type Mutation {
     createIndustry(industry: IndustryInput!): Industry
+    signInWithEmailAndPassword(email: String!, password: String!): Boolean
+    createUserWithEmailAndPassword(email: String!, password: String!): Boolean
   }
 `;
 
