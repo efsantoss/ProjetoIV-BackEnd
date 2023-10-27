@@ -5,6 +5,7 @@ const { ApolloError } = require('apollo-server');
 const userErrorCodes = require('../domain/exception/UserErrorCodes');
 
 class UserRepositoryImpl {
+    
     static createUserWithEmailAndPassword(email, password) {
         try {
           const firebase = new Firebase();
