@@ -3,6 +3,7 @@
 const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
 const industryErrorCodes = require('../domain/exception/IndustryErrorCodes')
+const UserRepository = require('../../user/repository/UserRepositoryImpl')
 
 class IndustryRepositoryImpl {
   
@@ -19,8 +20,16 @@ class IndustryRepositoryImpl {
       try {
         const firebase = new Firebase();
 
+        UserRepository.createUserWithEmailAndPassword(industry.email, industry.password)
+
+        const data = {
+          cnpj: industry.cnpj,
+          email: industry.email,
+          phone: industry.phone
+        }
+
         firebase.saveData(
-            'industries/' + industry.cnpj, industry
+            'industries/' + industry.cnpj, data
           );
   
           return industry;

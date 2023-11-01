@@ -4,11 +4,13 @@ class Industry {
     email
     cnpj
     phone
+    password
 
-    constructor(email, cnpj, phone) {
+    constructor(email, cnpj, phone, password) {
         this.email = email;
         this.cnpj = cnpj;
         this.phone = phone;
+        this.password = password;
     }
 }
 

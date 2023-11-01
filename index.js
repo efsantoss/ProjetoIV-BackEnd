@@ -3,8 +3,6 @@
 const { ApolloServer} = require('apollo-server');
 const industryTypeDefsImport = require('./src/industry/graphql/schema');
 const industryResolversImport = require('./src/industry/repository/IndustryResolver');
-const userTypeDefsImport = require('./src/user/graphql/schema');
-const userResolversImport = require('./src/user/repository/UserResolvers');
 const supplierTypeDefsImport = require('./src/supplier/graphql/schema');
 const supplierResolversImport = require('./src/supplier/repository/SupplierResolver');
 
@@ -12,9 +10,9 @@ const supplierResolversImport = require('./src/supplier/repository/SupplierResol
 //definindo o servidor
 const server = new ApolloServer({
     //passando o schema ( inputs, querys e mutations e types)
-    typeDefs: [industryTypeDefsImport, userTypeDefsImport, supplierTypeDefsImport],
+    typeDefs: [industryTypeDefsImport, supplierTypeDefsImport],
     //funcoes do graphql
-    resolvers: [industryResolversImport, userResolversImport,supplierResolversImport]
+    resolvers: [industryResolversImport,supplierResolversImport]
 })
 // iniciar o servidor
 server.listen().then(({ url }) => {

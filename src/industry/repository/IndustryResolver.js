@@ -24,7 +24,9 @@ const industryResolvers = {
       const industryData = new Industry(
         email = industry.email,
         cnpj = industry.cnpj,
-        phone = industry.phone);
+        phone = industry.phone,
+        password = industry.password
+        );
         
       return IndustryRepository.createIndustry(industryData) 
     },

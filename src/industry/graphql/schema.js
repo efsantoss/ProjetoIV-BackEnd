@@ -17,6 +17,7 @@ const industryTypeDefs = gql`
     email: String!
     cnpj: String!
     phone: String!
+    password: String!
   }
 
   type Query {
@@ -25,8 +26,6 @@ const industryTypeDefs = gql`
   
   type Mutation {
     createIndustry(industry: IndustryInput!): Industry
-    signInWithEmailAndPassword(email: String!, password: String!): Boolean
-    createUserWithEmailAndPassword(email: String!, password: String!): Boolean
   }
 `;
 // em mutation e query definimos a estrutura de uma função do graphql
