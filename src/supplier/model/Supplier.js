@@ -5,7 +5,7 @@ class Supplier {
     document
     phone
 
-    constructor(email, document, phone) {
+    constructor(email, document, phone,) {
         this.email = email;
         this.document = document;
         this.phone = phone;

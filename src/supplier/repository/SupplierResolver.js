@@ -8,11 +8,11 @@ const supplierResolvers = {
     // aki temos as implementações das mutations
     Mutation: {
         createSupplier: async (_, { supplier }) => {
-            const supplierData = new Supplier(
-                email = supplier.email,
-                document = supplier.document,
-                phone = supplier.phone
-            )
+            const supplierData = new Supplier({
+                email: supplier.email,
+                document: supplier.document,
+                phone: supplier.phone
+              });
             // aki estamos chamando a função createSupplier com o parametro supplierData
             return SupplierRepository.createSupplier(supplierData); 
         }
