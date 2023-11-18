@@ -11,7 +11,8 @@ const supplierResolvers = {
             const supplierData = new Supplier({
                 email: supplier.email,
                 document: supplier.document,
-                phone: supplier.phone
+                phone: supplier.phone,
+                password: supplier.password
               });
             // aki estamos chamando a função createSupplier com o parametro supplierData
             return SupplierRepository.createSupplier(supplierData); 

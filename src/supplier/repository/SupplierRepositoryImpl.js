@@ -1,6 +1,7 @@
 // importando o firebase e o apollo error
 const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
+const UserRepository = require('../../user/repository/UserRepositoryImpl')
 
 class SupplierRepositoryImpl {
     static createSupplier(supplier) {
@@ -15,6 +16,8 @@ class SupplierRepositoryImpl {
     
         try {
             const firebase = new Firebase();
+
+            UserRepository.createUserWithEmailAndPassword(supplier.email, supplier.password)
 
             firebase.saveData(
                 'suppliers/' + supplier.document, supplier

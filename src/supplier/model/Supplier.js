@@ -4,11 +4,13 @@ class Supplier {
     email
     document
     phone
+    password
 
-    constructor(email, document, phone,) {
+    constructor(email, document, phone, password) {
         this.email = email;
         this.document = document;
         this.phone = phone;
+        this.password = password;
     }
 }
 
