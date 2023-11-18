@@ -25,9 +25,34 @@ class SupplierRepositoryImpl {
     
             return supplier;
         } catch (error) {
-            throw new ApolloError(error, 'DATA_NOT_SAVED');;
+            throw new ApolloError(error, 'DATA_NOT_SAVED');
         }
     }; 
+    static supplyHistoryUpdate(supplyData) {
+        console.log(supplyData);
+
+        if (supplyData.address.length == "") {
+            throw new ApolloError("Address is not valid. " + supplyData.address, "S_ADL_04");
+        }
+        if (supplyData.quantity.length == 0 && supplyData.quantity.length < 0) {
+            throw new ApolloError("Quantity is not valid. " + supplyData.quantity, "S_QTL_05")
+        }
+        if (supplyData.document.length !== 14 && supplyData.document.length !== 11) {
+            throw new ApolloError("Document is not valid. " + supplyData.document, "S_DL_06");
+        }
+
+        try {
+            const firebase = new Firebase();
+
+            firebase.saveData(
+                'suppliers/' +  supplyData.document + '/history/' + supplyData.id, supplyData
+            );
+
+            return supplyData;
+        } catch (error) {
+            throw new ApolloError(error, 'SUPPLY_DATA_NOT_SAVED');
+        }
+    };
 }
 
 

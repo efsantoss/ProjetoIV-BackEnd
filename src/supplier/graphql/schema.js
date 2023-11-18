@@ -15,10 +15,24 @@ const supplierTypeDefs = gql`
         phone: String!
     }
 
+    type Supply {
+        id: String!
+        quantity: Int!
+        address: String!
+        document: String!
+    }
+
     input SupplierInput {
         email: String!
         document: String!
         phone: String!
+    }
+
+    input SupplyDataInput {
+        id: String!
+        quantity: Int!
+        address: String!
+        document: String!
     }
 
     type Query {
@@ -27,6 +41,8 @@ const supplierTypeDefs = gql`
 
     type Mutation {
         createSupplier(supplier: SupplierInput!): Supplier
+        updateHistory(supplyData: SupplyDataInput!): Supply
+
     }
 `
 
