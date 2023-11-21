@@ -19,13 +19,13 @@ const supplierTypeDefs = gql`
         id: String!
         quantity: Int!
         address: String!
-        document: String!
     }
 
     input SupplierInput {
         email: String!
         document: String!
         phone: String!
+        password: String!
     }
 
     input SupplyDataInput {
@@ -37,12 +37,12 @@ const supplierTypeDefs = gql`
 
     type Query {
         getSupplier(id: ID!): Supplier
+        getSupplies(): [Supply]!
     }
 
     type Mutation {
         createSupplier(supplier: SupplierInput!): Supplier
         updateHistory(supplyData: SupplyDataInput!): Supply
-
     }
 `
 

@@ -2,7 +2,7 @@
 //referencia eh o caminho q eu quero salvar
 
 const { initializeApp } = require("firebase/app");
-const { getDatabase, ref, set } = require("firebase/database");
+const { getDatabase, ref, set, get, child, push } = require("firebase/database");
 const { 
   getAuth,
   signInWithEmailAndPassword,
@@ -34,6 +34,23 @@ class Firebase {
     set(databaseRef, value);
   }
 
+  pushData(reference, value) {
+    const databaseRef = ref(this.database, reference);
+    
+    push(databaseRef, value);
+  }
+
+  getData(reference) {
+    const databaseRef = ref(this.database);
+
+    get(child(databaseRef, `${reference}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        return snapshot.val();
+      } else {
+        return Error("No data found");
+      }
+    })
+  }
   
   async signIn(email, password) {
     try {

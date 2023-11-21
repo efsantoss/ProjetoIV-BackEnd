@@ -16,6 +16,10 @@ class IndustryRepositoryImpl {
       if (industry.phone.length !== 9) {
         throw new ApolloError("Phone number must be 9 digits. " + industry.phone, industryErrorCodes.INVALID_PHONE_LENGTH);
       }
+
+      if (industry.password.length < 6) {
+        throw new ApolloError("Password must be 6 or more digits. ", "I_PL_04");
+      }
   
       try {
         const firebase = new Firebase();
@@ -37,6 +41,31 @@ class IndustryRepositoryImpl {
           throw new ApolloError(error, 'DATA_NOT_SAVED');;
       }
   };
+
+  static selectSupply(supplyInfo) {
+    if (supplyInfo.id == "") {
+      throw new ApolloError(
+        "ID cannot be empty " + id, "I_ID_03");
+    }
+
+    if (supplyInfo.industryDocument.length !== 14 && supplyInfo.industryDocument.length !== 11) {
+      throw new ApolloError("Document is not valid. " + supplyInfo.industryDocument, "I_DL_06");
+    }
+
+    if (supplyInfo.supplierDocument.length !== 14 && supplyInfo.supplierDocument.length !== 11) {
+      throw new ApolloError("Document is not valid. " + supplyInfo.supplierDocument, "I_DL_06");
+    }
+
+    try {
+      const firebase = new Firebase();
+
+      firebase.pushData(
+        'industries/' + supplyInfo.industryDocument + '/supplies', supplyInfo.id
+      );
+    } catch (error) {
+        throw new ApolloError(error, 'DATA_NOT_SAVED');;
+    }
+  }
 }
 
 module.exports = IndustryRepositoryImpl;

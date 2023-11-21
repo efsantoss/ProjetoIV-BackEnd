@@ -2,6 +2,7 @@
 
 const Industry = require('../model/Industry');
 const IndustryRepository = require('./IndustryRepositoryImpl')
+const SupplyInfo = require('../model/SupplyInfo')
 
 // resolvers definem a implementação das querys e mutation
 // resolver basicamente vai definir oque determinada query ou mutation vai fazer quando ser chamada no graphql
@@ -20,16 +21,26 @@ const industryResolvers = {
 
   // aki temos as implementações das mutations
   Mutation: {
-    createIndustry: async (_, {industry}) => {
+    createIndustry: async (_, { industryInput }) => {
       const industryData = new Industry(
-        email = industry.email,
-        cnpj = industry.cnpj,
-        phone = industry.phone,
-        password = industry.password
+        email = industryInput.email,
+        cnpj = industryInput.cnpj,
+        phone = industryInput.phone,
+        password = industryInput.password
         );
         
       return IndustryRepository.createIndustry(industryData) 
     },
+
+    selectSupply: async (_, { supplyIdentificationInput }) => {
+      const supplyInfo = new SupplyInfo(
+        id = supplyIdentificationInput.supplyId,
+        industryDocument = supplyIdentificationInput.industryDocument,
+        supplierDocument = supplyIdentificationInput.supplierDocument,
+      );
+  
+      return IndustryRepository.selectSupply(supplyInfo)
+    }
   }
 
 };

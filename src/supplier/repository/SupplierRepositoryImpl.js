@@ -13,6 +13,10 @@ class SupplierRepositoryImpl {
         if (supplier.phone.length !== 9) {
             throw new ApolloError("Phone number must be 9 digits. " + supplier.phone, "S_PL_03");
         }
+
+        if (supplier.password.length < 6) {
+            throw new ApolloError("Password must be 6 or more digits. ", "I_PL_04");
+          }
     
         try {
             const firebase = new Firebase();
@@ -28,33 +32,35 @@ class SupplierRepositoryImpl {
             throw new ApolloError(error, 'DATA_NOT_SAVED');
         }
     }; 
-    static supplyHistoryUpdate(supplyData) {
-        console.log(supplyData);
 
-        if (supplyData.address.length == "") {
-            throw new ApolloError("Address is not valid. " + supplyData.address, "S_ADL_04");
+    static supplyHistoryUpdate(supplyInfo) {
+        console.log(supplyInfo);
+
+        if (supplyInfo.address.length == "") {
+            throw new ApolloError("Address is not valid. " + supplyInfo.address, "S_ADL_04");
         }
-        if (supplyData.quantity.length == 0 && supplyData.quantity.length < 0) {
-            throw new ApolloError("Quantity is not valid. " + supplyData.quantity, "S_QTL_05")
+
+        if (supplyInfo.quantity.length == 0 && supplyInfo.quantity.length < 0) {
+            throw new ApolloError("Quantity is not valid. " + supplyInfo.quantity, "S_QTL_05")
         }
-        if (supplyData.document.length !== 14 && supplyData.document.length !== 11) {
-            throw new ApolloError("Document is not valid. " + supplyData.document, "S_DL_06");
+        
+        if (supplyInfo.document.length !== 14 && supplyInfo.document.length !== 11) {
+            throw new ApolloError("Document is not valid. " + supplyInfo.document, "S_DL_06");
         }
 
         try {
             const firebase = new Firebase();
 
             firebase.saveData(
-                'suppliers/' +  supplyData.document + '/history/' + supplyData.id, supplyData
+                'suppliers/' +  supplyInfo.document + '/history/' + supplyInfo.id, supplyInfo
             );
 
-            return supplyData;
+            return supplyInfo;
         } catch (error) {
             throw new ApolloError(error, 'SUPPLY_DATA_NOT_SAVED');
         }
     };
 }
-
 
 // aki eu quero exporta nao importar
 module.exports = SupplierRepositoryImpl;

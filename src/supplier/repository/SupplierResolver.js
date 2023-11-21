@@ -21,11 +21,12 @@ const supplierResolvers = {
 
         updateHistory: async (_, { supplyData }) => {
           const supplyInfo = new SupplyInfo(
-            id= supplyData.id,
-            address= supplyData.address,
-            quantity= supplyData.quantity,
+            id = supplyData.id,
+            address = supplyData.address,
+            quantity = supplyData.quantity,
             document= supplyData.document,
           );
+          
           return SupplierRepository.supplyHistoryUpdate(supplyInfo); 
         }
     }

@@ -20,12 +20,19 @@ const industryTypeDefs = gql`
     password: String!
   }
 
+  input SupplyIdentificationInput {
+    supplyId: String!,
+    industryDocument: String!
+    supplierDocument: String!
+  }
+
   type Query {
     getIndustry(id: ID!): Industry
   }
   
   type Mutation {
-    createIndustry(industry: IndustryInput!): Industry
+    createIndustry(industryInput: IndustryInput!): Industry
+    selectSupply(supplyIdentificationInput: SupplyIdentificationInput): Supply
   }
 `;
 // em mutation e query definimos a estrutura de uma função do graphql
