@@ -37,7 +37,7 @@ const supplierTypeDefs = gql`
 
     type Query {
         getSupplier(id: ID!): Supplier
-        getSupplies(): [Supply]!
+        getSupplies: [Supply]!
     }
 
     type Mutation {
