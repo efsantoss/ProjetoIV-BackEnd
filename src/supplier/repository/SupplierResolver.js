@@ -2,17 +2,12 @@
 const Supplier = require('../model/Supplier');
 const SupplierRepository = require('./SupplierRepositoryImpl');
 const SupplyInfo = require('../model/SupplyInfo');
+const { ApolloError } = require('apollo-server');
 //require para importa o arquivo
 
 
 const supplierResolvers = {
     // aki temos as implementações das mutations
-    Query: {
-      getSupplies: async (_, _) => {
-
-      }
-    },
-
     Mutation: {
         createSupplier: async (_, { supplier }) => {
             const supplierData = new Supplier(

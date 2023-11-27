@@ -60,7 +60,30 @@ class SupplierRepositoryImpl {
             throw new ApolloError(error, 'SUPPLY_DATA_NOT_SAVED');
         }
     };
+
+    static getSupplies() {
+        try {
+            const firebase = new Firebase();
+            const suppliesData = firebase.getData('supplies');
+
+            if (!suppliesData) {
+                throw new ApolloError("No supplies data found.", "SUPPLIES_NOT_FOUND");
+            }
+
+            const suppliesList = Object.values(suppliesData).map(supply => ({
+                id: supply.id,
+                quantity: supply.quantity,
+                address: supply.address,
+                document: supply.document
+            }));
+
+            return suppliesList;
+        } catch (error) {
+            throw new ApolloError(error, 'ERROR_GETTING_SUPPLIES');
+        }
+    }
 }
+
 
 // aki eu quero exporta nao importar
 module.exports = SupplierRepositoryImpl;
