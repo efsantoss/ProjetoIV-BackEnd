@@ -7,6 +7,12 @@ const SupplyInfo = require('../model/SupplyInfo');
 
 const supplierResolvers = {
     // aki temos as implementações das mutations
+    Query: {
+      getSupplies: async (_, _) => {
+
+      }
+    },
+
     Mutation: {
         createSupplier: async (_, { supplier }) => {
             const supplierData = new Supplier(
