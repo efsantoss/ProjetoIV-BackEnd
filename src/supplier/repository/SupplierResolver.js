@@ -1,4 +1,3 @@
-const Supplier = require('../mongo/Supplier');
 const SupplierRepository = require('./SupplierRepositoryImpl');
 
 const supplierResolvers = {
