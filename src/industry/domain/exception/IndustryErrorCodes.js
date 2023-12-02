@@ -1,6 +1,0 @@
-const industryErrorCodes = {
-
-    INVALID_CNPJ_LENGTH_ERROR_CODE: "I_IC_01",
-    INVALID_PHONE_LENGTH_ERROR_CODE: "I_IP_02",
-
-}

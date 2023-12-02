@@ -1,85 +1,84 @@
-// importando o firebase e o apollo error
-const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
 const UserRepository = require('../../user/repository/UserRepositoryImpl')
+const Supplier = require('../mongo/Supplier')
 
 class SupplierRepositoryImpl {
-    static createSupplier(supplier) {
-     
-        if (supplier.document.length !== 14 && supplier.document.length !== 11) {
-            throw new ApolloError("Document is not valid. " + supplier.document, "S_DL_02");
-        }
-        
-        if (supplier.phone.length !== 9) {
-            throw new ApolloError("Phone number must be 9 digits. " + supplier.phone, "S_PL_03");
-        }
 
-        if (supplier.password.length < 6) {
-            throw new ApolloError("Password must be 6 or more digits. ", "I_PL_04");
+    static async registerSupply(email, document, phone, password) {
+        try {
+            const existingSupplier = await Supplier.findOne({ email });
+
+            if (existingSupplier) {
+                throw new ApolloError("Este fornecedor já está cadastrado " + "id: " + existingSupplier._id, "S_RI_01");
+              }
+        
+            if (document.length !== 14 && document.length !== 11) {
+                throw new ApolloError("Document is not valid. " + document, "S_DL_02");
+            }
+            
+            if (phone.length !== 9) {
+                throw new ApolloError("Phone number must be 9 digits. " + phone, "S_PL_03");
+            }
+    
+            if (password.length < 6) {
+                throw new ApolloError("Password must be 6 or more digits. ", "S_PL_04");
+              }
+              
+            const result = await UserRepository.signUp(email, password)
+
+            if (result.status) {
+              const newSupplier = new Supplier({
+                _id: result.id,
+                email: email,
+                document: document,
+                phone: phone
+              });
+          
+              await newSupplier.save();
+
+              return {email, phone, document};
+            }
+        } catch (error) {
+            throw new ApolloError(error, "S_RS_02");
+          }
+    }
+
+    static async addSupplierHistory(supplierId, historyEntry) {
+        try {
+          const supplier = await Supplier.findById(supplierId);
+
+          console.log(supplier);
+    
+          if (!supplier) {
+            throw new ApolloError("Fornecedor não encontrado", "S_ASH_01");
           }
     
-        try {
-            const firebase = new Firebase();
-
-            UserRepository.createUserWithEmailAndPassword(supplier.email, supplier.password)
-
-            firebase.saveData(
-                'suppliers/' + supplier.document, supplier
-            );
+          supplier.history.push(historyEntry);
+          await supplier.save();
     
-            return supplier;
+          return {
+            message: "Histórico do fornecedor adicionado com sucesso",
+            status: true,
+            id: supplierId,
+            supply: historyEntry
+          };
         } catch (error) {
-            throw new ApolloError(error, 'DATA_NOT_SAVED');
+          throw new ApolloError(error, "S_ASH_02");
         }
-    }; 
+    }
 
-    static supplyHistoryUpdate(supplyInfo) {
-        console.log(supplyInfo);
-
-        if (supplyInfo.address.length == "") {
-            throw new ApolloError("Address is not valid. " + supplyInfo.address, "S_ADL_04");
-        }
-
-        if (supplyInfo.quantity.length == 0 && supplyInfo.quantity.length < 0) {
-            throw new ApolloError("Quantity is not valid. " + supplyInfo.quantity, "S_QTL_05")
-        }
-        
-        if (supplyInfo.document.length !== 14 && supplyInfo.document.length !== 11) {
-            throw new ApolloError("Document is not valid. " + supplyInfo.document, "S_DL_06");
-        }
-
+    static async getSupplies() {
         try {
-            const firebase = new Firebase();
-
-            firebase.saveData(
-                'suppliers/' +  supplyInfo.document + '/history/' + supplyInfo.id, supplyInfo
-            );
-
-            return supplyInfo;
+          const supplies = await Supplier.find({}, 'id history');
+    
+          return supplies.map((supplier) => {
+            return {
+                id: supplier._id,
+                history: supplier.history
+            };
+          });
         } catch (error) {
-            throw new ApolloError(error, 'SUPPLY_DATA_NOT_SAVED');
-        }
-    };
-
-    static getSupplies() {
-        try {
-            const firebase = new Firebase();
-            const suppliesData = firebase.getData('supplies');
-
-            if (!suppliesData) {
-                throw new ApolloError("No supplies data found.", "SUPPLIES_NOT_FOUND");
-            }
-
-            const suppliesList = Object.values(suppliesData).map(supply => ({
-                id: supply.id,
-                quantity: supply.quantity,
-                address: supply.address,
-                document: supply.document
-            }));
-
-            return suppliesList;
-        } catch (error) {
-            throw new ApolloError(error, 'ERROR_GETTING_SUPPLIES');
+          throw new ApolloError(error, "S_GET_01");
         }
     }
 }

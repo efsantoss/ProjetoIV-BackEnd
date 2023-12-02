@@ -1,39 +1,45 @@
-
-const Supplier = require('../model/Supplier');
+const Supplier = require('../mongo/Supplier');
 const SupplierRepository = require('./SupplierRepositoryImpl');
-const SupplyInfo = require('../model/SupplyInfo');
-const { ApolloError } = require('apollo-server');
-//require para importa o arquivo
-
 
 const supplierResolvers = {
+    Query: {
+      getSupplies: async (_, {}) => {
+        const supplies = await SupplierRepository.getSupplies();
+
+        return supplies;
+      }
+    },
+
     // aki temos as implementações das mutations
     Mutation: {
         createSupplier: async (_, { supplier }) => {
-            const supplierData = new Supplier(
-                email= supplier.email,
-                document= supplier.document,
-                phone= supplier.phone,
-                password= supplier.password
-              );
-            // aki estamos chamando a função createSupplier com o parametro supplierData
-            return SupplierRepository.createSupplier(supplierData); 
+          const supplierRegistered = await SupplierRepository.registerSupply(
+            supplier.email,
+            supplier.document,
+            supplier.phone,
+            supplier.password
+          ); 
+          
+          return supplierRegistered;
         },
 
-        updateHistory: async (_, { supplyData }) => {
-          const supplyInfo = new SupplyInfo(
-            id = supplyData.id,
-            address = supplyData.address,
-            quantity = supplyData.quantity,
-            document= supplyData.document,
-          );
-          
-          return SupplierRepository.supplyHistoryUpdate(supplyInfo); 
+        updateSupplierHistory: async (_, { supplyData }) => { 
+          const history = await SupplierRepository.addSupplierHistory(
+            supplyData.id, 
+            {
+              address: supplyData.address,
+              quantity: supplyData.quantity
+            }
+          ); 
+
+          return {
+            id: history.id,
+            quantity: history.supply.quantity,
+            address: history.supply.address
+          }
         }
     }
   
   };
-
-
 
   module.exports = supplierResolvers;

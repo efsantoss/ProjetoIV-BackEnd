@@ -1,8 +1,12 @@
 {
   "dependencies": {
-    "apollo-server": "^3.12.1",
-    "firebase": "^10.5.0",
-    "firebase-admin": "^11.11.0",
-    "graphql": "^16.8.1"
+    "apollo-server": "^3.13.0",
+    "bcrypt": "^5.1.1",
+    "firebase": "^10.7.0",
+    "firebase-admin": "^11.11.1",
+    "graphql": "^16.8.1",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.2",
+    "punycode": "^2.3.1"
   }
 }

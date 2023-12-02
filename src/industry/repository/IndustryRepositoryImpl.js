@@ -2,45 +2,54 @@
 
 const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
-const industryErrorCodes = require('../domain/exception/IndustryErrorCodes')
 const UserRepository = require('../../user/repository/UserRepositoryImpl')
+const Industry = require('../mongo/Industry');
 
 class IndustryRepositoryImpl {
   
-  static createIndustry(industry) {
-      if (industry.cnpj.length !== 14) {
-        throw new ApolloError(
-          "CNPJ must be 14 digits. " + industry.cnpj, industryErrorCodes.INVALID_CNPJ_LENGTH);
-      }
-  
-      if (industry.phone.length !== 9) {
-        throw new ApolloError("Phone number must be 9 digits. " + industry.phone, industryErrorCodes.INVALID_PHONE_LENGTH);
-      }
+  static async registerIndustry(email, document, phone, password) {
+    try {
+        const existingIndustry = await Industry.findOne({ email });
 
-      if (industry.password.length < 6) {
-        throw new ApolloError("Password must be 6 or more digits. ", "I_PL_04");
-      }
-  
-      try {
-        const firebase = new Firebase();
-
-        UserRepository.createUserWithEmailAndPassword(industry.email, industry.password)
-
-        const data = {
-          cnpj: industry.cnpj,
-          email: industry.email,
-          phone: industry.phone
+        if (existingIndustry) {
+            throw new ApolloError("Essa Industria já está cadastrada", "I_RI_01");
+          }
+    
+        if (document.length !== 14 && document.length !== 11) {
+            throw new ApolloError("Document is not valid. " + document, "I_DL_03");
+        }
+        
+        if (phone.length !== 9) {
+            throw new ApolloError("Phone number must be 9 digits. " + phone, "I_PL_04");
         }
 
-        firebase.saveData(
-            'industries/' + industry.cnpj, data
-          );
-  
-          return industry;
-      } catch (error) {
-          throw new ApolloError(error, 'DATA_NOT_SAVED');;
+        if (password.length < 6) {
+            throw new ApolloError("Password must be 6 or more digits. ", "I_PL_05");
+        }
+        
+        const result = await UserRepository.signUp(email, password);
+
+        if (result.status) {
+          const newIndustry = new Industry({
+            _id: result.id,
+            email,
+            document,
+            phone
+          });
+      
+          await newIndustry.save();
+
+          return {
+            email:email, 
+            phone: phone, 
+            cnpj: document
+          };
+        }
+    } catch (error) {
+        throw new ApolloError(error, "I_RI_02");
       }
-  };
+  }
+
 
   static selectSupply(supplyInfo) {
     if (supplyInfo.id == "") {

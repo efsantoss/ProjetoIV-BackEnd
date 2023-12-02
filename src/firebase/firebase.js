@@ -53,19 +53,19 @@ class Firebase {
   }
   
   async signIn(email, password) {
-    try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-
-      console.log(userCredential.user);
-        
-      if (userCredential.user) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch(error) {
-      return error;
-    }
+    return signInWithEmailAndPassword(this.auth, email, password)
+      .then(userCredential => {
+        console.log(userCredential.user);
+  
+        if (userCredential.user) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch(error => {
+        return error;
+      });
   }
 
   async createUser(email, password) {
