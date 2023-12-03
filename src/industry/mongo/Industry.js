@@ -7,8 +7,8 @@ const indutrySchema = new mongoose.Schema({
     phone: { type: String, required: true },
     history: [
         {
-            supplierId: String,
-            supplyId: String
+            address: String,
+            quantity: Number
         }
     ]
 });

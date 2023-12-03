@@ -1,9 +1,9 @@
 // Realização das funções no banco de dados
-
-const Firebase = require('../../firebase/firebase');
 const { ApolloError } = require('apollo-server');
 const UserRepository = require('../../user/repository/UserRepositoryImpl')
 const Industry = require('../mongo/Industry');
+const SupplierRepository = require('../../supplier/repository/SupplierRepositoryImpl');
+const Supplier = require('../../supplier/mongo/Supplier');
 
 class IndustryRepositoryImpl {
   
@@ -13,7 +13,7 @@ class IndustryRepositoryImpl {
 
         if (existingIndustry) {
             throw new ApolloError("Essa Industria já está cadastrada", "I_RI_01");
-          }
+        }
     
         if (document.length !== 14 && document.length !== 11) {
             throw new ApolloError("Document is not valid. " + document, "I_DL_03");
@@ -50,31 +50,64 @@ class IndustryRepositoryImpl {
       }
   }
 
-
-  static selectSupply(supplyInfo) {
-    if (supplyInfo.id == "") {
+  static async selectSupply(industryId, supplierId, supplyId) {
+    if (supplierId === "") {
       throw new ApolloError(
-        "ID cannot be empty " + id, "I_ID_03");
+        "supplierId cannot be empty " + supplyId, "I_ID_03");
     }
 
-    if (supplyInfo.industryDocument.length !== 14 && supplyInfo.industryDocument.length !== 11) {
-      throw new ApolloError("Document is not valid. " + supplyInfo.industryDocument, "I_DL_06");
+    if (supplyId == "") {
+      throw new ApolloError(
+        "supplyId cannot be empty " + supplyId, "I_ID_04");
     }
 
-    if (supplyInfo.supplierDocument.length !== 14 && supplyInfo.supplierDocument.length !== 11) {
-      throw new ApolloError("Document is not valid. " + supplyInfo.supplierDocument, "I_DL_06");
-    }
+    const supply = await SupplierRepository.getSupply(supplierId, supplyId);
 
-    try {
-      const firebase = new Firebase();
+    if (!supply) {
+      throw new ApolloError("Fornecimento não encontrado", "S_GS_03");
+    } else {
+      try {
+        const existingIndustry = await Industry.findById(industryId);
+  
+        if (!existingIndustry) {
+            throw new ApolloError("Industria não encontrada", "I_SS_01");
+        } 
 
-      firebase.pushData(
-        'industries/' + supplyInfo.industryDocument + '/supplies', supplyInfo.id
-      );
-    } catch (error) {
-        throw new ApolloError(error, 'DATA_NOT_SAVED');;
+        const newSupplyHistory = {
+          address: supply.address,
+          quantity: supply.quantity
+        }
+
+        existingIndustry.history.push(newSupplyHistory);
+        await existingIndustry.save();
+
+        return {
+          message: "Histórico da industria adicionado com sucesso",
+          status: true,
+          supply: supply
+        };
+      } catch (error) {
+        throw new ApolloError(error, "I_SS_02");
+      }
     }
   }
+
+  static async getIndustryHistory(industryId) {
+    try {
+      const existingIndustry = await Industry.findById(industryId);
+
+       if (!existingIndustry) {
+            throw new ApolloError("Industria não encontrada", "I_GIH_01");
+      }
+
+      console.log(existingIndustry.history);
+      
+      return existingIndustry.history;
+    } catch (error) {
+      throw new ApolloError(error, "I_GIH_02");
+    }
+  }
+
 }
 
 module.exports = IndustryRepositoryImpl;

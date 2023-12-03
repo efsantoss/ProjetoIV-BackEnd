@@ -2,13 +2,19 @@ const IndustryRepository = require('./IndustryRepositoryImpl')
 
 const industryResolvers = {
   Query: {
-    getIndustry: async (_, { id }) => {
+    getIndustry: async (_, { industryId }) => {
       return {
         email: 'example@example.com',
         cnpj: 1234567890,
         phone: 1234567890,
       };
     },
+
+    getIndustryHistory: async (_, { industryId }) => {
+      const industryHistory = await IndustryRepository.getIndustryHistory(industryId)
+
+      return industryHistory;
+    }
   },
 
   Mutation: {
@@ -23,14 +29,14 @@ const industryResolvers = {
       return industry;
     },
 
-    selectSupply: async (_, { supplyIdentificationInput }) => {
-      const supplyInfo = new SupplyInfo(
-        id = supplyIdentificationInput.supplyId,
-        industryDocument = supplyIdentificationInput.industryDocument,
-        supplierDocument = supplyIdentificationInput.supplierDocument,
+    selectSupply: async (_, { industryId, supplierId, supplyId }) => {
+      const selectSupplyResult = await IndustryRepository.selectSupply(
+        industryId,
+        supplierId,
+        supplyId
       );
-  
-      return IndustryRepository.selectSupply(supplyInfo)
+      
+      return selectSupplyResult.status;
     }
   }
 

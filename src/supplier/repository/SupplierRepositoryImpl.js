@@ -46,8 +46,6 @@ class SupplierRepositoryImpl {
     static async addSupplierHistory(supplierId, historyEntry) {
         try {
           const supplier = await Supplier.findById(supplierId);
-
-          console.log(supplier);
     
           if (!supplier) {
             throw new ApolloError("Fornecedor não encontrado", "S_ASH_01");
@@ -81,8 +79,28 @@ class SupplierRepositoryImpl {
           throw new ApolloError(error, "S_GET_01");
         }
     }
-}
 
+    static async getSupply(supplierId, supplyId) {
+      try {
+        const supplier = await Supplier.findById(supplierId)
+
+        if (!supplier) {
+          throw new ApolloError("Fornecedor não encontrado", "S_GS_01");
+        }
+
+        const supply = supplier.history.find(supply => supply._id == supplyId);
+
+        if (!supply) {
+          throw new ApolloError("Fornecimento não encontrado", "S_GS_03");
+        }
+
+        return supply;
+      } catch (error) {
+        throw new ApolloError(error, "S_GS_02");
+      }
+    }
+
+}
 
 // aki eu quero exporta nao importar
 module.exports = SupplierRepositoryImpl;
