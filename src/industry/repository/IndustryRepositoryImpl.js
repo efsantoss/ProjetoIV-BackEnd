@@ -99,8 +99,6 @@ class IndustryRepositoryImpl {
        if (!existingIndustry) {
             throw new ApolloError("Industria não encontrada", "I_GIH_01");
       }
-
-      console.log(existingIndustry.history);
       
       return existingIndustry.history;
     } catch (error) {
