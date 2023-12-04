@@ -1,10 +1,13 @@
+const { ApolloError } = require('apollo-server');
+
 class ServerClient {
+    #net = require('net');
 
-     #net = require('net');
+    #PORT = 12345;
+    #ADDRESS = '127.0.0.1';
+    #client = new this.#net.Socket();
 
-     #PORT = 12345;
-     #ADDRESS = '127.0.0.1';
-     #client = new this.#net.Socket();
+    connected = false;
 
     constructor() {
         this.#connectToServer
@@ -14,11 +17,16 @@ class ServerClient {
         try {
             this.#client.connect(
                 this.#PORT, this.#ADDRESS, () => {
+                    connected = true;
                     console.log('Connected to the server');
                 }
             )
+
+            this.#client.on('error', (error) => {
+                throw new ApolloError(error, "S_CS_02");
+            });
         } catch (error) {
-            console.log(error);
+            throw new ApolloError(error, "S_CS_01");
         }
     }
 
@@ -35,8 +43,10 @@ class ServerClient {
                 console.log('Client is not connected to the server.');
             }
         } catch (error) {
-            console.log(error);
+            throw new ApolloError(error, "S_SS_01");
         }
     }
 
 }
+
+module.exports = ServerClient;

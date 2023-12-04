@@ -1,6 +1,7 @@
 const { ApolloError } = require('apollo-server');
 const UserRepository = require('../../user/repository/UserRepositoryImpl')
 const Supplier = require('../mongo/Supplier')
+const ServerClient = require('../../server/model/ServerClient');
 
 class SupplierRepositoryImpl {
 
@@ -51,11 +52,18 @@ class SupplierRepositoryImpl {
             throw new ApolloError("Fornecedor não encontrado", "S_ASH_01");
           }
     
+          const serverClient = new ServerClient();
+          if (serverClient.connected) {
+            serverClient.sendToServer(historyEntry);
+          } else {
+            throw new ApolloError("Falha ao conectar no servidor", "S_CS_03");
+          }
+          
           supplier.history.push(historyEntry);
           await supplier.save();
     
           return {
-            message: "Histórico do fornecedor adicionado com sucesso",
+            message: "Fornecimento adicionado com sucesso",
             status: true,
             id: supplierId,
             supply: historyEntry
