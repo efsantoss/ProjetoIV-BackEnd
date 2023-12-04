@@ -6,6 +6,12 @@ const supplierResolvers = {
         const supplies = await SupplierRepository.getSupplies();
 
         return supplies;
+      },
+
+      getSupplierHistory: async (_, { supplierId }) => {
+        const supplierHistory = await SupplierRepository.getSupplierHistory(supplierId);
+
+        return supplierHistory;
       }
     },
 

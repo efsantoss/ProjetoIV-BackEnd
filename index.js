@@ -10,7 +10,7 @@ const userTypeResolversImport = require('./src/user/repository/UserResolver');
 
 const mongoose = require('mongoose');
 
-const uri = "mongodb+srv://admin:admin@cluster0.efvdjjo.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:admin@energy-match-cluster.mkuo6si.mongodb.net/Energy_Match?retryWrites=true&w=majority";
 
 mongoose.connect(uri);
 
@@ -25,7 +25,3 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
 });
-
-
-//type def: eh o schema
-//resolvers: arquivo de resolvers

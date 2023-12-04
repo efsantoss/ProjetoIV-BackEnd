@@ -100,6 +100,26 @@ class SupplierRepositoryImpl {
       }
     }
 
+    static async getSupplierHistory(supplierId) {
+      try {
+        const supplier = await Supplier.findById(supplierId);
+
+        if (!supplier) {
+          throw new ApolloError("Fornecedor não encontrado", "S_GSH_01");
+        }
+
+        const supplierHistory = supplier.history;
+
+        if (!supplierHistory) {
+          throw new ApolloError("Fornecimento não encontrado", "S_GSH_03");
+        }
+
+        return supplierHistory;
+      } catch (error) {
+        throw new ApolloError(error, "S_GSH_02");
+      }
+    }
+
 }
 
 // aki eu quero exporta nao importar

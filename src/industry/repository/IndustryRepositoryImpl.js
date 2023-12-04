@@ -97,9 +97,13 @@ class IndustryRepositoryImpl {
       const existingIndustry = await Industry.findById(industryId);
 
        if (!existingIndustry) {
-            throw new ApolloError("Industria não encontrada", "I_GIH_01");
+          throw new ApolloError("Industria não encontrada", "I_GIH_01");
       }
       
+      if (!existingIndustry.history) {
+        throw new ApolloError("Historico da Industria não encontrado", "I_GIH_03");
+      }
+
       return existingIndustry.history;
     } catch (error) {
       throw new ApolloError(error, "I_GIH_02");
