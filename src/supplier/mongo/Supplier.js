@@ -10,6 +10,12 @@
                 address: String,
                 quantity: Number
             }
+        ],
+        supplies: [
+            {
+                address: String,
+                quantity: Number
+            }
         ]
     });
 

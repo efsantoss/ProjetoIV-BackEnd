@@ -3,6 +3,8 @@ const UserRepository = require('../../user/repository/UserRepositoryImpl')
 const Supplier = require('../mongo/Supplier')
 const ServerClient = require('../../server/model/ServerClient');
 
+const serverClient = new ServerClient();
+
 class SupplierRepositoryImpl {
 
     static async registerSupply(email, document, phone, password) {
@@ -52,22 +54,23 @@ class SupplierRepositoryImpl {
             throw new ApolloError("Fornecedor não encontrado", "S_ASH_01");
           }
     
-          const serverClient = new ServerClient();
-          if (serverClient.connected) {
-            serverClient.sendToServer(historyEntry);
+          const serverResult = await serverClient.sendToServer(historyEntry);
+        
+          if (serverResult) {
+            supplier.history.push(historyEntry);
+            supplier.supplies.push(historyEntry);
+            await supplier.save();
+      
+            return {
+              message: "Fornecimento adicionado com sucesso",
+              status: true,
+              id: supplierId,
+              supply: historyEntry
+            };
           } else {
-            throw new ApolloError("Falha ao conectar no servidor", "S_CS_03");
+            throw new ApolloError("Verifique os dados enviados!", "S_ASH_03");
           }
-          
-          supplier.history.push(historyEntry);
-          await supplier.save();
-    
-          return {
-            message: "Fornecimento adicionado com sucesso",
-            status: true,
-            id: supplierId,
-            supply: historyEntry
-          };
+
         } catch (error) {
           throw new ApolloError(error, "S_ASH_02");
         }
@@ -75,12 +78,12 @@ class SupplierRepositoryImpl {
 
     static async getSupplies() {
         try {
-          const supplies = await Supplier.find({}, 'id history');
+          const supplies = await Supplier.find({}, 'id supplies');
     
           return supplies.map((supplier) => {
             return {
                 id: supplier._id,
-                history: supplier.history
+                supplies: supplier.supplies
             };
           });
         } catch (error) {
@@ -96,13 +99,37 @@ class SupplierRepositoryImpl {
           throw new ApolloError("Fornecedor não encontrado", "S_GS_01");
         }
 
-        const supply = supplier.history.find(supply => supply._id == supplyId);
+        const supply = supplier.supplies.find(supply => supply._id == supplyId);
 
         if (!supply) {
           throw new ApolloError("Fornecimento não encontrado", "S_GS_03");
         }
 
         return supply;
+      } catch (error) {
+        throw new ApolloError(error, "S_GS_02");
+      }
+    }
+
+    static async deleteSupply(supplierId, supplyId) {
+      try {
+        const supplier = await Supplier.findById(supplierId)
+
+        if (!supplier) {
+          throw new ApolloError("Fornecedor não encontrado", "S_GS_01");
+        }
+
+        const supplyIndex = supplier.supplies.findIndex(supply => supply._id == supplyId);
+
+        if (supplyIndex === -1) {
+            throw new ApolloError("Fornecimento não encontrado", "S_GS_03");
+        }
+
+        supplier.supplies.splice(supplyIndex, 1);
+
+        await supplier.save();
+        
+        return true;
       } catch (error) {
         throw new ApolloError(error, "S_GS_02");
       }

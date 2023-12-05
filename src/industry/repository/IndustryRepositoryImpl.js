@@ -78,8 +78,11 @@ class IndustryRepositoryImpl {
           quantity: supply.quantity
         }
 
+        const deleteSupply = await SupplierRepository.deleteSupply(supplierId, supplyId);
+
         existingIndustry.history.push(newSupplyHistory);
         await existingIndustry.save();
+
 
         return {
           message: "Histórico da industria adicionado com sucesso",

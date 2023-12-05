@@ -21,15 +21,9 @@ const supplierTypeDefs = gql`
         address: String!
     }
 
-    type SupplyHistory {
-        id: String!
-        quantity: Int!
-        address: String!
-    }
-
     type Supplies {
         id: String!,
-        history: [SupplyHistory]!
+        supplies: [Supply]!
     }
 
     input SupplierInput {
