@@ -31,20 +31,31 @@ class ServerClient {
     }
 
     sendToServer(quantity, address) {
-        try {
-            if (this.#client.writable) {
-                const data = {
-                    quantity: quantity,
-                    address: address
-                };
-    
-                this.#client.write(JSON.stringify(data));
-            } else {
-                console.log('Client is not connected to the server.');
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.connected) {
+                    const data = {
+                        quantity: quantity,
+                        address: address
+                    };
+
+                    // Send data to the server
+                    this.#client.write(JSON.stringify(data));
+
+                    // Listen for the server's response
+                    this.#client.once('data', (data) => {
+                        const response = JSON.parse(data.toString()).response;
+                        resolve(response === 'true');
+                    });
+
+                } else {
+                    console.log('Client is not connected to the server.');
+                    resolve(false);
+                }
+            } catch (error) {
+                reject(new ApolloError(error, "S_SS_01"));
             }
-        } catch (error) {
-            throw new ApolloError(error, "S_SS_01");
-        }
+        });
     }
 
 }
